@@ -1,5 +1,6 @@
 import { IsEmail, IsIn, IsNotEmpty, IsString, Length, Matches } from "class-validator";
-import { DEPARTMENT, USERROLES } from "src/utils/constants/constant";
+import { DEPARTMENT, USERROLES } from "src/utils/constant";
+import { ResponseMessages } from "src/utils/responseMessages";
 
 
 type UserRole = typeof USERROLES[number];
@@ -10,7 +11,7 @@ export class UserDataDto {
     @IsString()
     @Length(1, 50)
     @Matches(/^[A-Za-z\s]+$/, {
-        message: 'First name should only contain alphabets and spaces',
+        message: ResponseMessages.VALIDATION.FIRST_NAME_INVALID,
     })
     fname: string
 
@@ -18,7 +19,7 @@ export class UserDataDto {
     @IsString()
     @Length(1, 50)
     @Matches(/^[A-Za-z\s]+$/, {
-        message: 'Last name should only contain alphabets and spaces',
+        message: ResponseMessages.VALIDATION.LAST_NAME_INVALID,
     })
     lname: string
 
@@ -34,4 +35,5 @@ export class UserDataDto {
     @IsNotEmpty()
     @IsIn(DEPARTMENT)
     department: Department
+
 }   
