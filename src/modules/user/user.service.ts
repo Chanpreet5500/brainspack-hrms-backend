@@ -33,10 +33,21 @@ export class UserServices {
 
     }
 
-    async getusers(page: number, limit: number) {
+    async getusers(page: number, limit: number, search: string) {
         try {
-            const totalusers = await this.UsersModel.countDocuments();
-            const users = await this.UsersModel.find().skip((page - 1) * limit).limit(limit);
+            const searchRegex = new RegExp(search, 'i');
+            const query =
+            {
+                isDeleted: false,
+                ...(search && {
+                    $or: [
+                        { fname: { $regex: searchRegex } },
+                        { lname: { $regex: searchRegex } }
+                    ]
+                })
+            }
+            const totalusers = await this.UsersModel.countDocuments(query);
+            const users = await this.UsersModel.find(query).skip((page - 1) * limit).limit(limit);
             return { totalusers, users }
         } catch (error) {
             throw new InternalServerErrorException(ResponseMessages.USER.FAILED_FETCH)
@@ -79,6 +90,7 @@ export class UserServices {
             const updatedUser = await this.UsersModel.findByIdAndUpdate(id,
                 {
                     isActive: false,
+                    isDeleted: true,
                     updatedBy: deletedById,
                     updatedAt: new Date(),
                 },

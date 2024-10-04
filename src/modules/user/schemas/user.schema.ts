@@ -27,6 +27,9 @@ export class Users extends Document {
     @Prop({ default: true })
     isActive: boolean;
 
+    @Prop({ default: false })
+    isDeleted: boolean;
+
     @Prop({ type: Date, default: Date.now })
     createdAt: Date;
 
@@ -42,3 +45,4 @@ export class Users extends Document {
 }
 
 export const UserSchema = SchemaFactory.createForClass(Users);
+UserSchema.index({ fname: 'text', lname: 'text' });

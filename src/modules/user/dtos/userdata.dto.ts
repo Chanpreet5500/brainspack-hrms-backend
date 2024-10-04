@@ -1,4 +1,4 @@
-import { IsEmail, IsIn, IsNotEmpty, IsString, Length, Matches } from "class-validator";
+import { IsBoolean, IsEmail, IsIn, IsNotEmpty, IsOptional, IsString, Length, Matches } from "class-validator";
 import { DEPARTMENT, USERROLES } from "src/utils/constant";
 import { ResponseMessages } from "src/utils/responseMessages";
 
@@ -7,6 +7,8 @@ type UserRole = typeof USERROLES[number];
 type Department = typeof DEPARTMENT[number];
 
 export class UserDataDto {
+
+    @IsOptional()
     @IsNotEmpty()
     @IsString()
     @Length(1, 50)
@@ -15,6 +17,7 @@ export class UserDataDto {
     })
     fname: string
 
+    @IsOptional()
     @IsNotEmpty()
     @IsString()
     @Length(1, 50)
@@ -24,16 +27,23 @@ export class UserDataDto {
     lname: string
 
 
+    @IsOptional()
     @IsNotEmpty()
     @IsEmail()
     email: string
 
+    @IsOptional()
     @IsNotEmpty()
     @IsIn(USERROLES)
     role: UserRole
 
+    @IsOptional()
     @IsNotEmpty()
     @IsIn(DEPARTMENT)
     department: Department
+
+    @IsOptional()
+    @IsBoolean()
+    isDeleted: boolean
 
 }   
