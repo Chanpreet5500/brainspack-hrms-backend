@@ -44,6 +44,9 @@ export class UserDataDto {
 
     @IsOptional()
     @IsBoolean()
-    isDeleted: boolean
+    isActive: boolean
 
+    @IsOptional()
+    @IsBoolean()
+    isDeleted: boolean
 }   

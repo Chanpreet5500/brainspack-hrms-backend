@@ -8,9 +8,9 @@ import { ResponseMessages } from "src/utils/responseMessages";
 export class LeaveController {
     constructor(private readonly leaveServices: LeaveServices) { }
 
-    @Get('/:page/:limit')
-    async getLeaves(@Param('page') page: number, @Param('limit') limit: number) {
-        return this.leaveServices.getAllleaves(page, limit)
+    @Get('/:page?/:limit?/:search?')
+    async getLeaves(@Query('page') page: number, @Query('limit') limit: number, @Query('search') search: string) {
+        return this.leaveServices.getAllleaves(page, limit, search)
     }
 
     @Get('/:employeeid')
@@ -27,9 +27,10 @@ export class LeaveController {
     async update(@Param('updatedby') updatedById: string,
         @Param('leaveid') leaveId: string,
         @Query('status') status: string) {
-        if (status !== 'Approved' && status !== 'Rejected') {
+        if (status !== 'approved' && status !== 'rejected') {
             throw new BadRequestException(ResponseMessages.LEAVE.INVALID_STATUS);
         }
         return this.leaveServices.updateleave(updatedById, leaveId, status)
     }
+
 }

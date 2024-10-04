@@ -24,7 +24,7 @@ export const ResponseMessages = {
         FAILED_CREATE: "Failed to create the Leave",
         FAILED_FETCH: "Failed to fetch leaves",
         FAILED_UPDATE: "Failed to update the leave status",
-        INVALID_STATUS: `Invalid status. Status must be either "Approved" or "Rejected"`
+        INVALID_STATUS: `Invalid status. Status must be either "approved" or "rejected"`
     }
 
 };

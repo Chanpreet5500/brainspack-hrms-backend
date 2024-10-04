@@ -1,7 +1,7 @@
 import { Transform } from "class-transformer";
 import { IsDate, IsIn, IsMongoId, IsNotEmpty, IsOptional, IsString } from "class-validator";
 import { parseDateString } from "src/helpers/date.helper";
-import { LEAVETYPES } from "src/utils/constant";
+import { LEAVETYPES, STATUSTYPE } from "src/utils/constant";
 import { IsBeforeDate } from "src/validators/is-before-date.validator";
 
 
@@ -31,9 +31,4 @@ export class LeaveDataDto {
     @IsNotEmpty()
     @IsIn(LEAVETYPES)
     leave_type: Leavetype
-
-    @IsOptional()
-    @IsString()
-    status: string = 'Pending'
-
 }   
