@@ -17,11 +17,11 @@ export class LeaveServices {
     async createleave(createdById: string, leaveData: LeaveDataDto) {
         try {
             validateObjectId(createdById, 'Created By ID');
-            const { employee_id, start_date, end_date, reason, leave_type, status } = leaveData;
+            const { employee_id, start_date, end_date, reason, leave_type } = leaveData;
             const employeeId = new Types.ObjectId(employee_id)
             const totaldays = Math.floor((end_date.getTime() - start_date.getTime()) / (1000 * 60 * 60 * 24)) + 1;
             await this.LeaveModel.create({
-                employee_id: employeeId, start_date, end_date, reason, leave_type, status, totaldays: totaldays, createdBy: createdById, updatedBy: createdById
+                employee_id: employeeId, start_date, end_date, reason, leave_type, totaldays: totaldays, createdBy: createdById, updatedBy: createdById
             });
             return { message: ResponseMessages.LEAVE.CREATED }
         } catch (error) {
