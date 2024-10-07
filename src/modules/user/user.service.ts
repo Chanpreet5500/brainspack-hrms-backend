@@ -1,9 +1,10 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { ConflictException, HttpException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { UserDataDto } from "./dtos/userdata.dto";
 import { InjectModel } from "@nestjs/mongoose";
 import { Users } from "./schemas/user.schema";
-import { Model, Types } from "mongoose";
-import { ResponseMessages } from "src/utils/constants/responseMessages";
+import { Model } from "mongoose";
+import { ResponseMessages } from "src/utils/responseMessages";
+import { validateObjectId } from "src/validators/id-validator.validator";
 
 @Injectable()
 export class UserServices {
@@ -11,47 +12,102 @@ export class UserServices {
         @InjectModel(Users.name) private UsersModel: Model<Users>,
     ) { }
 
-    async createuser(userData: UserDataDto) {
-        const { fname, lname, email, role, department } = userData;
-        const createdUser = await this.UsersModel.create({
-            fname, lname, email, role, department
-        });
-        return { message: ResponseMessages.USER.CREATED, userId: createdUser._id }
+    async createuser(userData: UserDataDto, createdById: string) {
+        try {
+            validateObjectId(createdById, 'Created By ID');
+            const { fname, lname, email, role, department } = userData;
+            const existingUser = await this.UsersModel.findOne({ email });
+            if (existingUser) {
+                throw new ConflictException(ResponseMessages.GENERAL.EMAIL_ALREADY_EXISTS);
+            }
+            const createdUser = await this.UsersModel.create({
+                fname, lname, email, role, department, createdBy: createdById, updatedBy: createdById
+            });
+            return { message: ResponseMessages.USER.CREATED, userId: createdUser._id }
+        } catch (error) {
+            if (error instanceof HttpException) {
+                throw error;
+            }
+            throw new InternalServerErrorException(ResponseMessages.USER.FAILED_CREATE)
+        }
+
     }
 
-    async getusers(page: number, limit: number) {
-        const totalusers = await this.UsersModel.countDocuments()
-        const users = await this.UsersModel.find().skip((page - 1) * limit).limit(limit);
-        return { totalusers: totalusers, users: users }
+    async getusers(page: number, limit: number, search: string) {
+        try {
+            const searchRegex = new RegExp(search, 'i');
+            const query =
+            {
+                isDeleted: false,
+                ...(search && {
+                    $or: [
+                        { fname: { $regex: searchRegex } },
+                        { lname: { $regex: searchRegex } }
+                    ]
+                })
+            }
+            const totalusers = await this.UsersModel.countDocuments(query);
+            const users = await this.UsersModel.find(query).skip((page - 1) * limit).limit(limit);
+            return { totalusers, users }
+        } catch (error) {
+            throw new InternalServerErrorException(ResponseMessages.USER.FAILED_FETCH)
+        }
+
     }
 
-    async updateuser(id: string, userData: UserDataDto) {
-        const updatedData = {
-            ...userData,
-            updatedAt: new Date()
-        }
-        const updatedUser = await this.UsersModel.findByIdAndUpdate(id, updatedData, {
-            new: true,
-            useFindAndModify: false,
-        });
+    async updateuser(id: string, updatedById: string, userData: UserDataDto) {
 
-        if (!updatedUser) {
-            throw new NotFoundException(`User with ID ${id} not found`);
+        try {
+            validateObjectId(id, 'User ID');
+            validateObjectId(updatedById, 'Updated By ID');
+            const updatedData = {
+                ...userData,
+                updatedBy: updatedById,
+                updatedAt: new Date()
+            }
+            const updatedUser = await this.UsersModel.findByIdAndUpdate(id, updatedData, {
+                new: true,
+            });
+
+            if (!updatedUser) {
+                throw new NotFoundException(ResponseMessages.GENERAL.NOT_FOUND);
+            }
+            return { message: ResponseMessages.USER.UPDATED, updatedUser };
+        } catch (error) {
+            if (error instanceof HttpException) {
+                throw error;
+            }
+            throw new InternalServerErrorException(ResponseMessages.USER.FAILED_UPDATE)
         }
-        return { message: ResponseMessages.USER.UPDATED, updateduser: updatedUser };
+
     }
 
-    async deleteuser(id: string) {
+    async deleteuser(id: string, deletedById: string) {
 
-        if (!Types.ObjectId.isValid(id)) {
-            throw new BadRequestException(`Invalid user ID: ${id}`);
+        try {
+            validateObjectId(id, 'User ID');
+            validateObjectId(deletedById, 'deletedById');
+            const updatedUser = await this.UsersModel.findByIdAndUpdate(id,
+                {
+                    isActive: false,
+                    isDeleted: true,
+                    updatedBy: deletedById,
+                    updatedAt: new Date(),
+                },
+                { new: true }
+            );
+
+            if (!updatedUser) {
+                throw new NotFoundException(ResponseMessages.GENERAL.NOT_FOUND);
+            }
+
+            return { message: ResponseMessages.USER.DELETED }
+        } catch (error) {
+            if (error instanceof HttpException) {
+                throw error;
+            }
+            throw new InternalServerErrorException(ResponseMessages.USER.FAILED_FETCH)
         }
-        const deletedUser = await this.UsersModel.findByIdAndDelete(id);
 
-        if (!deletedUser) {
-            throw new NotFoundException(`User with ID ${id} not found`);
-        }
-
-        return { message: ResponseMessages.USER.DELETED }
     }
 }

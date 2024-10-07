@@ -6,6 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from './modules/user/user.module';
 import config from './config/config';
 import { JsonContentTypeMiddleware } from './middleware/json-content-type.middleware';
+import { LeaveModule } from './modules/leave/leave.module';
 
 
 @Module({
@@ -23,10 +24,11 @@ import { JsonContentTypeMiddleware } from './middleware/json-content-type.middle
       }),
       inject: [ConfigService],
     }),
-    UserModule
+    UserModule,
+    LeaveModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
