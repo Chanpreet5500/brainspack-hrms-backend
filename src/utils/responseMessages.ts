@@ -12,7 +12,8 @@ export const ResponseMessages = {
     GENERAL: {
         NOT_FOUND: "User with this ID not found",
         INVALID_ID: 'Invalid ID',
-        EMAIL_ALREADY_EXISTS: "Email Already registered"
+        EMAIL_ALREADY_EXISTS: "Email Already registered",
+        EMAIL_NOT_FOUND: "User with this email not found"
     },
     VALIDATION: {
         FIRST_NAME_INVALID: 'First name should only contain alphabets and spaces',

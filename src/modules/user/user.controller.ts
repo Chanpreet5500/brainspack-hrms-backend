@@ -29,7 +29,7 @@ export class UserController {
         return this.userServices.deleteUser(id, deletedById)
     }
 
-    @Patch('/login/:email')
+    @Patch('/login/:email?')
     async login(@Query('email') email: string, @Body() userUpdateddata: UserUpdateDataDto) {
         return this.userServices.loginUser(email, userUpdateddata)
     }
