@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Param, Post, Put, Query } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, Param, Patch, Post, Query } from "@nestjs/common";
 import { LeaveDataDto } from "./dto/leavedata.dto";
 import { LeaveServices } from "./leave.service";
 import { ResponseMessages } from "src/utils/responseMessages";
@@ -23,7 +23,7 @@ export class LeaveController {
         return this.leaveServices.createleave(createdById, leavedata)
     }
 
-    @Put('update/:updatedby/:leaveid')
+    @Patch('update/:updatedby/:leaveid/:status?')
     async update(@Param('updatedby') updatedById: string,
         @Param('leaveid') leaveId: string,
         @Query('status') status: string) {

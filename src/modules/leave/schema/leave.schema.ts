@@ -1,21 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { Prop, SchemaFactory, Schema } from '@nestjs/mongoose';
 import { Document, Schema as MongooseSchema, Types } from 'mongoose';
+import { LeaveTypes } from 'src/modules/leavePolicies/schemas/leaveTypes.schema';
 import { Users } from 'src/modules/user/schemas/user.schema';
-import { LEAVETYPES, STATUSTYPE } from 'src/utils/constant';
+import { HALFDAYTIME, LEAVEDAY, STATUSTYPE } from 'src/utils/constant';
 
 
-type Leavetype = typeof LEAVETYPES[number];
 type Statustype = typeof STATUSTYPE[number]
+type leaveDay = typeof LEAVEDAY[number];
+type halfDayTime = typeof HALFDAYTIME[number];
 @Injectable()
 @Schema()
 export class Leaves extends Document {
 
     @Prop({ type: Types.ObjectId, ref: Users.name, required: true })
     employee_id: string;
-
-    @Prop({ type: String, required: true, enum: LEAVETYPES })
-    leave_type: Leavetype
 
     @Prop({ type: Date, required: true })
     start_date: Date
@@ -43,6 +42,21 @@ export class Leaves extends Document {
 
     @Prop({ type: MongooseSchema.Types.ObjectId })
     updatedBy: string;
+
+    @Prop({ type: Types.ObjectId, ref: LeaveTypes.name, required: true })
+    leave_type_id: string;
+
+    @Prop({ type: String, required: true, enum: LEAVEDAY })
+    start_day: leaveDay
+
+    @Prop({ type: String, required: true, enum: LEAVEDAY })
+    end_day: leaveDay
+
+    @Prop({ type: String, enum: HALFDAYTIME })
+    start_half_day_time: halfDayTime
+
+    @Prop({ type: String, enum: HALFDAYTIME })
+    end_half_day_time: halfDayTime
 }
 
 export const LeaveSchema = SchemaFactory.createForClass(Leaves);

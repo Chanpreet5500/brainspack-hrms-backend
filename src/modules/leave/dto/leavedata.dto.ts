@@ -1,11 +1,11 @@
 import { Transform } from "class-transformer";
-import { IsDate, IsIn, IsMongoId, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsDate, IsIn, IsMongoId, IsNotEmpty, IsOptional, IsString, ValidateIf } from "class-validator";
 import { parseDateString } from "src/helpers/date.helper";
-import { LEAVETYPES, STATUSTYPE } from "src/utils/constant";
+import { HALFDAYTIME, LEAVEDAY } from "src/utils/constant";
 import { IsBeforeDate } from "src/validators/is-before-date.validator";
 
-
-type Leavetype = typeof LEAVETYPES[number];
+type leaveDay = typeof LEAVEDAY[number];
+type halfDayTime = typeof HALFDAYTIME[number];
 
 export class LeaveDataDto {
     @IsNotEmpty()
@@ -29,6 +29,25 @@ export class LeaveDataDto {
     reason?: string | null;
 
     @IsNotEmpty()
-    @IsIn(LEAVETYPES)
-    leave_type: Leavetype
+    @IsString()
+    @IsMongoId()
+    leave_type_id: string;
+
+    @IsNotEmpty()
+    @IsIn(LEAVEDAY)
+    start_day: leaveDay
+
+    @IsNotEmpty()
+    @IsIn(LEAVEDAY)
+    end_day: leaveDay
+
+    @ValidateIf((o) => o.start_day === 'half')
+    @IsNotEmpty()
+    @IsIn(HALFDAYTIME)
+    start_half_day_time?: halfDayTime;
+
+    @ValidateIf((o) => o.end_day === 'half')
+    @IsNotEmpty()
+    @IsIn(HALFDAYTIME)
+    end_half_day_time?: halfDayTime;
 }   

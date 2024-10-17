@@ -24,6 +24,9 @@ export class Users extends Document {
     @Prop({ type: String, required: true, enum: DEPARTMENT })
     department: Department
 
+    @Prop({ type: String })
+    img: string
+
     @Prop({ default: true })
     isActive: boolean;
 

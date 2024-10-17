@@ -8,6 +8,45 @@ type Department = typeof DEPARTMENT[number];
 
 export class UserDataDto {
 
+    @IsNotEmpty()
+    @IsString()
+    @Length(1, 50)
+    @Matches(/^[A-Za-z\s]+$/, {
+        message: ResponseMessages.VALIDATION.FIRST_NAME_INVALID,
+    })
+    fname: string
+
+    @IsNotEmpty()
+    @IsString()
+    @Length(1, 50)
+    @Matches(/^[A-Za-z\s]+$/, {
+        message: ResponseMessages.VALIDATION.LAST_NAME_INVALID,
+    })
+    lname: string
+
+    @IsNotEmpty()
+    @IsEmail()
+    email: string
+
+    @IsNotEmpty()
+    @IsIn(USERROLES)
+    role: UserRole
+
+    @IsNotEmpty()
+    @IsIn(DEPARTMENT)
+    department: Department
+
+    @IsOptional()
+    @IsBoolean()
+    isActive: boolean
+
+    @IsOptional()
+    @IsBoolean()
+    isDeleted: boolean
+}
+
+export class UserUpdateDataDto {
+
     @IsOptional()
     @IsNotEmpty()
     @IsString()
@@ -49,4 +88,7 @@ export class UserDataDto {
     @IsOptional()
     @IsBoolean()
     isDeleted: boolean
+
+    @IsOptional()
+    img: string
 }   

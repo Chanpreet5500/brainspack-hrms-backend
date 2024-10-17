@@ -7,6 +7,8 @@ import { UserModule } from './modules/user/user.module';
 import config from './config/config';
 import { JsonContentTypeMiddleware } from './middleware/json-content-type.middleware';
 import { LeaveModule } from './modules/leave/leave.module';
+import { LeavePolicyModule } from './modules/leavePolicies/leavePolicies.module';
+import { HolidayModule } from './modules/holiday/holiday.module';
 
 
 @Module({
@@ -25,7 +27,9 @@ import { LeaveModule } from './modules/leave/leave.module';
       inject: [ConfigService],
     }),
     UserModule,
-    LeaveModule
+    LeaveModule,
+    LeavePolicyModule,
+    HolidayModule
   ],
   controllers: [AppController],
   providers: [AppService,],
