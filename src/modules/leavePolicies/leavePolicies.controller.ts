@@ -29,9 +29,9 @@ export class LeavePolicyController {
         return this.LeavePolicyServices.createLeavePolicy(LeavePolicyData)
     }
 
-    @Put('/update/:leaveTypeID')
-    async update(@Param('leaveTypeID') leaveTypeID: string, @Body() LeavePolicyData: LeavePolicyUpdateDto) {
-        return this.LeavePolicyServices.updateLeavePolicy(leaveTypeID, LeavePolicyData)
+    @Put('/update/:leavePolicyID')
+    async update(@Param('leavePolicyID') leavePolicyID: string, @Body() LeavePolicyData: LeavePolicyUpdateDto) {
+        return this.LeavePolicyServices.updateLeavePolicy(leavePolicyID, LeavePolicyData)
     }
 
     @Get('/balance')

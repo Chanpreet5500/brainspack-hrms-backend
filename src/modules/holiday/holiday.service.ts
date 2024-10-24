@@ -38,17 +38,17 @@ export class HolidayServices {
         }
     }
 
-    async updateHoliday(id: string, updatedById: string, holidayUpdateddata: HolidayUpdateDataDto) {
+    async updateHoliday(updatedById: string, holidayUpdateddata: HolidayUpdateDataDto) {
 
         try {
-            validateObjectId(id, 'Holiday ID');
+            // validateObjectId(id, 'Holiday ID');
             validateObjectId(updatedById, 'Updated By ID');
             const updatedData = {
                 ...holidayUpdateddata,
                 updatedBy: updatedById,
                 updatedAt: new Date()
             }
-            const updatedHoliday = await this.HolidayModel.findByIdAndUpdate(id, updatedData, {
+            const updatedHoliday = await this.HolidayModel.findByIdAndUpdate(holidayUpdateddata.holiday_id, updatedData, {
                 new: true,
             });
 

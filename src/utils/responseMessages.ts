@@ -32,6 +32,7 @@ export const ResponseMessages = {
         FAILED_CREATE: "Failed to create the Leave type",
         FAILED_FETCH: 'Failed to fetch the Leave types',
         TYPE_ALREADY_EXISTS: "Leave type already exists",
+        TYPE_NOT_EXISTS: "Leave type not exist"
     },
     LEAVEPOLICY: {
         CREATED: 'Leave policy created successfully',

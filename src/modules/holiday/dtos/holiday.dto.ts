@@ -1,5 +1,5 @@
 import { Transform } from "class-transformer";
-import { IsDate, IsIn, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsDate, IsIn, IsMongoId, IsNotEmpty, IsOptional, IsString } from "class-validator";
 import { parseDateString } from "src/helpers/date.helper";
 import { HOLIDAYTYPE } from "src/utils/constant";
 
@@ -46,5 +46,10 @@ export class HolidayUpdateDataDto {
     @IsOptional()
     @IsIn(HOLIDAYTYPE)
     type: holidayType
+
+    @IsNotEmpty()
+    @IsString()
+    @IsMongoId()
+    holiday_id: string
 
 }

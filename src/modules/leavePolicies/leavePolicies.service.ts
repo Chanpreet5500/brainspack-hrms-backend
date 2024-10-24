@@ -1,4 +1,4 @@
-import { ConflictException, HttpException, Injectable, InternalServerErrorException } from "@nestjs/common";
+import { ConflictException, HttpException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { LeaveTypeDto } from "./dtos/leaveType.dto";
 import { LeaveTypes } from "./schemas/leaveTypes.schema";
 import { InjectModel } from "@nestjs/mongoose";
@@ -58,18 +58,23 @@ export class LeavePolicyServices {
 
     async createLeavePolicy(LeavePolicyData: LeavePolicyDto) {
         try {
-            const { leave_type_id, max_leaves_per_year, max_leaves } = LeavePolicyData;
+            const { leave_type_id, max_leaves_per_year } = LeavePolicyData;
 
             const leaveTypeId = new Types.ObjectId(leave_type_id)
+            const existingType = await this.leaveTypeModel.findOne({ _id: leaveTypeId });
+            if (!existingType) {
+                throw new ConflictException(ResponseMessages.LEAVETYPE.TYPE_NOT_EXISTS);
+            }
 
-            const existingPolicy = await this.leavePolicyModel.findOne({ leave_type_id });
+
+            const existingPolicy = await this.leavePolicyModel.findOne({ leave_type_id: leaveTypeId });
 
             if (existingPolicy) {
                 throw new ConflictException(ResponseMessages.LEAVEPOLICY.POLICIY_ALREADY_EXISTS);
             }
 
             const leavePolicy = await this.leavePolicyModel.create({
-                leave_type_id: leaveTypeId, max_leaves_per_year, max_leaves
+                leave_type_id: leaveTypeId, max_leaves_per_year
             });
 
             return { message: ResponseMessages.LEAVEPOLICY.CREATED, leavePolicyId: leavePolicy._id }
@@ -83,22 +88,19 @@ export class LeavePolicyServices {
 
     }
 
-    async updateLeavePolicy(leaveTypeID: string, LeavePolicyData: LeavePolicyUpdateDto) {
+    async updateLeavePolicy(leavePolicyID: string, LeavePolicyData: LeavePolicyUpdateDto) {
         try {
             const updatedPolicyData = {
                 ...LeavePolicyData,
                 updatedAt: new Date()
             }
-            const leaveTypeId = new Types.ObjectId(leaveTypeID);
-            const existingPolicy = await this.leavePolicyModel.findOne({ leave_type_id: new Types.ObjectId(leaveTypeID) });
-            if (!existingPolicy) {
-                return { message: ResponseMessages.LEAVEPOLICY.NOT_FOUND };
+            const leavePolicyId = new Types.ObjectId(leavePolicyID);
+            const updatedPolicy = await this.leavePolicyModel.findByIdAndUpdate(leavePolicyId, updatedPolicyData, {
+                new: true,
+            });
+            if (!updatedPolicy) {
+                throw new NotFoundException(ResponseMessages.LEAVEPOLICY.NOT_FOUND);
             }
-            const updatedPolicy = await this.leavePolicyModel.findOneAndUpdate(
-                { leave_type_id: leaveTypeId },
-                updatedPolicyData,
-                { new: true }
-            );
             return { message: ResponseMessages.LEAVEPOLICY.UPDATED, updatedpolicy: updatedPolicy }
         } catch (error) {
             if (error instanceof HttpException) {
@@ -119,12 +121,12 @@ export class LeavePolicyServices {
     }
 
     async createUserBalance(userId: string) {
-        const leavePolicies = await this.leavePolicyModel.find().select('leave_type_id max_leaves').exec();
+        const leavePolicies = await this.leavePolicyModel.find().select('leave_type_id max_leaves_per_year').exec();
         for (const policy of leavePolicies) {
             const leaveBalance = new this.leaveBalanceModel({
                 user_id: userId,
                 leave_type_id: policy.leave_type_id,
-                total_allocated: policy.max_leaves,
+                total_allocated: policy.max_leaves_per_year,
             });
             await leaveBalance.save();
         }

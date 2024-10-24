@@ -7,14 +7,11 @@ import { LeaveTypes } from "./leaveTypes.schema";
 @Schema()
 export class LeavePolicies extends Document {
 
-    @Prop({ type: Types.ObjectId, ref: LeaveTypes.name, required: true })
+    @Prop({ type: Types.ObjectId, ref: LeaveTypes.name })
     leave_type_id: string;
 
     @Prop({ type: Number, required: true })
     max_leaves_per_year: number
-
-    @Prop({ type: Number, required: true })
-    max_leaves: number
 
     @Prop({ type: Date, default: Date.now })
     createdAt: Date;

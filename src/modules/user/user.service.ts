@@ -147,21 +147,19 @@ export class UserServices {
         }
     }
 
-    async loginUser(email: string, userUpdateddata: UserUpdateDataDto) {
+    async loginUser(email: string) {
         try {
             const existingUser = await this.UsersModel.findOne({ email });
             if (existingUser) {
-                const updatedUser = await this.UsersModel.findOneAndUpdate(
-                    { email },
-                    { $set: userUpdateddata },
-                    { new: true }
-                );
-                return updatedUser;
+                return existingUser;
             } else {
-                throw new ConflictException(ResponseMessages.GENERAL.EMAIL_ALREADY_EXISTS);
+                throw new ConflictException(ResponseMessages.GENERAL.EMAIL_NOT_FOUND);
             }
         } catch (error) {
-            throw new Error(`Error updating user: ${error.message}`);
+            if (error instanceof HttpException) {
+                throw error;
+            }
+            throw new InternalServerErrorException("Failed to Login")
         }
     }
 }

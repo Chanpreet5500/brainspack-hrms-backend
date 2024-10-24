@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Param, Patch, Post, Put, Query } from "@nestjs/common";
 import { UserServices } from "./user.service";
 import { UserDataDto, UserUpdateDataDto } from "./dtos/userdata.dto";
+import { LoginDto } from "./dtos/login.dto";
 
 
 @Controller('api/users')
@@ -29,8 +30,8 @@ export class UserController {
         return this.userServices.deleteUser(id, deletedById)
     }
 
-    @Patch('/login/:email?')
-    async login(@Query('email') email: string, @Body() userUpdateddata: UserUpdateDataDto) {
-        return this.userServices.loginUser(email, userUpdateddata)
+    @Post('/login')
+    async login(@Body() loginDto: LoginDto) {
+        return this.userServices.loginUser(loginDto.email)
     }
 }

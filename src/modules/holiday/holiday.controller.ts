@@ -17,9 +17,9 @@ export class HolidayController {
         return this.holidayServices.createHoliday(createdById, holidayData)
     }
 
-    @Patch('update/:id/:updatedby')
-    async update(@Param('id') id: string, @Param('updatedby') updatedById: string, @Body() holidayData: HolidayUpdateDataDto) {
-        return this.holidayServices.updateHoliday(id, updatedById, holidayData)
+    @Patch('update/:updatedby')
+    async update(@Param('updatedby') updatedById: string, @Body() holidayData: HolidayUpdateDataDto) {
+        return this.holidayServices.updateHoliday(updatedById, holidayData)
     }
 
     @Delete('delete/:id')

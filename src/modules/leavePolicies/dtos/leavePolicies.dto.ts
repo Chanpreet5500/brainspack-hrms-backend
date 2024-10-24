@@ -9,24 +9,10 @@ export class LeavePolicyDto {
     @IsNotEmpty()
     @IsNumber()
     max_leaves_per_year: number;
-
-    @IsNotEmpty()
-    @IsNumber()
-    max_leaves: number;
 }
 
-
 export class LeavePolicyUpdateDto {
-    @IsOptional()
-    @IsString()
-    @IsMongoId()
-    leave_type_id?: string;
-
-    @IsOptional()
+    @IsNotEmpty()
     @IsNumber()
     max_leaves_per_year?: number;
-
-    @IsOptional()
-    @IsNumber()
-    max_leaves?: number;
 }
