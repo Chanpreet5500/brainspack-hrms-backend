@@ -9,6 +9,9 @@ import { JsonContentTypeMiddleware } from './middleware/json-content-type.middle
 import { LeaveModule } from './modules/leave/leave.module';
 import { LeavePolicyModule } from './modules/leavePolicies/leavePolicies.module';
 import { HolidayModule } from './modules/holiday/holiday.module';
+import { PassportModule } from '@nestjs/passport';
+import { JwtModule } from '@nestjs/jwt';
+import { JwtStrategy } from './auth/startegy/jwt.strategy';
 
 
 @Module({
@@ -26,13 +29,18 @@ import { HolidayModule } from './modules/holiday/holiday.module';
       }),
       inject: [ConfigService],
     }),
+    PassportModule,
+    JwtModule.register({
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: '2592000s' },
+    }),
     UserModule,
     LeaveModule,
     LeavePolicyModule,
     HolidayModule
   ],
   controllers: [AppController],
-  providers: [AppService,],
+  providers: [AppService, JwtStrategy],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {

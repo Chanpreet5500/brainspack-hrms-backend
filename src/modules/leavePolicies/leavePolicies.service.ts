@@ -1,5 +1,5 @@
 import { ConflictException, HttpException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
-import { LeaveTypeDto } from "./dtos/leaveType.dto";
+import { LeaveTypeDto, UpdateLeaveTypeDto } from "./dtos/leaveType.dto";
 import { LeaveTypes } from "./schemas/leaveTypes.schema";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
@@ -45,6 +45,38 @@ export class LeavePolicyServices {
             throw new InternalServerErrorException(ResponseMessages.LEAVETYPE.FAILED_CREATE)
         }
     }
+
+    async updateType(leaveTypeID: string, leaveTypeData: UpdateLeaveTypeDto) {
+        try {
+            if (leaveTypeData?.name) {
+                const existingType = await this.leaveTypeModel.findOne({
+                    name: leaveTypeData.name,
+                    _id: { $ne: leaveTypeID }
+                });
+
+                if (existingType) {
+                    throw new ConflictException(ResponseMessages.LEAVETYPE.TYPE_ALREADY_EXISTS);
+                }
+            }
+
+            const updatedLeaveType = await this.leaveTypeModel.findByIdAndUpdate(
+                leaveTypeID,
+                { ...leaveTypeData },
+                { new: true });
+
+            if (!updatedLeaveType) {
+                throw new NotFoundException(ResponseMessages.LEAVETYPE.TYPE_NOT_EXISTS);
+            }
+
+            return { message: ResponseMessages.LEAVETYPE.UPDATED, leaveTypeId: updatedLeaveType };
+        } catch (error) {
+            if (error instanceof HttpException) {
+                throw error;
+            }
+            throw new InternalServerErrorException(ResponseMessages.LEAVETYPE.FAILED_UPDATE);
+        }
+    }
+
 
     async allLeavePolicy() {
         try {

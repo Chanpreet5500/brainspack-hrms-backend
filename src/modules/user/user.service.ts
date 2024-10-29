@@ -8,6 +8,7 @@ import { ResponseMessages } from "src/utils/responseMessages";
 import { validateObjectId } from "src/validators/id-validator.validator";
 import { LeavePolicyServices } from "../leavePolicies/leavePolicies.service";
 import { Leaves } from "../leave/schema/leave.schema";
+import { JwtService } from "@nestjs/jwt";
 // import { LeaveServices } from "../leave/leave.service";
 
 @Injectable()
@@ -16,7 +17,7 @@ export class UserServices {
         @InjectModel(Users.name) private UsersModel: Model<Users>,
         @InjectModel(Users.name) private LeaveModel: Model<Leaves>,
         private readonly leavePolicyServices: LeavePolicyServices,
-        // private readonly leaveServices: LeaveServices
+        private readonly jwtService: JwtService
     ) { }
 
     async createUser(userData: UserDataDto, createdById: string) {
@@ -148,10 +149,22 @@ export class UserServices {
     }
 
     async loginUser(email: string) {
+        console.log('im in the login function')
         try {
             const existingUser = await this.UsersModel.findOne({ email });
-            if (existingUser) {
-                return existingUser;
+            if (existingUser || existingUser.isDeleted === false) {
+                const payload = {
+                    userId: existingUser._id,
+                    email: existingUser.email,
+                    fname: existingUser.fname,
+                    lname: existingUser.lname,
+                    role: existingUser.role,
+                    department: existingUser.department,
+                    isActive: existingUser.isActive,
+                    img: existingUser.img
+                };
+                const accessToken = this.jwtService.sign(payload);
+                return { accessToken }
             } else {
                 throw new ConflictException(ResponseMessages.GENERAL.EMAIL_NOT_FOUND);
             }

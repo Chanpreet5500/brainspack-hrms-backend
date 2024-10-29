@@ -5,6 +5,7 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { Users, UserSchema } from "./schemas/user.schema";
 import { LeavePolicyModule } from "../leavePolicies/leavePolicies.module";
 import { LeaveModule } from "../leave/leave.module";
+import { JwtModule } from "@nestjs/jwt";
 
 
 @Module({
@@ -14,7 +15,11 @@ import { LeaveModule } from "../leave/leave.module";
             schema: UserSchema
         }]),
         LeavePolicyModule,
-        forwardRef(() => LeaveModule)
+        forwardRef(() => LeaveModule),
+        forwardRef(() => JwtModule.register({
+            secret: process.env.JWT_SECRET,
+            signOptions: { expiresIn: '2592000s' },
+        })),
     ],
     providers: [UserServices],
     controllers: [UserController],
