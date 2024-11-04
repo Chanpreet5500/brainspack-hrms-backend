@@ -43,6 +43,13 @@ export class UserDataDto {
     @IsOptional()
     @IsBoolean()
     isDeleted: boolean
+
+    @IsNotEmpty()
+    @IsString()
+    @Matches(/^\d{10}$/, {
+        message: ResponseMessages.VALIDATION.PHONE_NUMBER,
+    })
+    phoneNumber: string;
 }
 
 export class UserUpdateDataDto {
@@ -91,4 +98,11 @@ export class UserUpdateDataDto {
 
     @IsOptional()
     img: string
+
+    @IsOptional()
+    @IsString()
+    @Matches(/^\d{10}$/, {
+        message: ResponseMessages.VALIDATION.PHONE_NUMBER,
+    })
+    phoneNumber: string;
 }   

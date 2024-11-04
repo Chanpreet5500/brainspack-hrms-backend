@@ -37,6 +37,6 @@ export class UserController {
 
     @Post('/login')
     async login(@Body() loginDto: LoginDto) {
-        return this.userServices.loginUser(loginDto.email)
+        return this.userServices.loginUser(loginDto)
     }
 }

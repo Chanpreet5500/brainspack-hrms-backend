@@ -32,7 +32,7 @@ import { JwtStrategy } from './auth/startegy/jwt.strategy';
     PassportModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '2592000s' },
+      signOptions: { expiresIn: '30d' },
     }),
     UserModule,
     LeaveModule,

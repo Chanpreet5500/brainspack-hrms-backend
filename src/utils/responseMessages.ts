@@ -18,6 +18,7 @@ export const ResponseMessages = {
     VALIDATION: {
         FIRST_NAME_INVALID: 'First name should only contain alphabets and spaces',
         LAST_NAME_INVALID: 'Last name should only contain alphabets and spaces',
+        PHONE_NUMBER: 'Phone number must contain exactly 10 digits'
     },
     LEAVE: {
         CREATED: "Leave request added successfully",

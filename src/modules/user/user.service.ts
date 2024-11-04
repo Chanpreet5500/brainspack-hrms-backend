@@ -9,6 +9,7 @@ import { validateObjectId } from "src/validators/id-validator.validator";
 import { LeavePolicyServices } from "../leavePolicies/leavePolicies.service";
 import { Leaves } from "../leave/schema/leave.schema";
 import { JwtService } from "@nestjs/jwt";
+import { LoginDto } from "./dtos/login.dto";
 // import { LeaveServices } from "../leave/leave.service";
 
 @Injectable()
@@ -23,13 +24,13 @@ export class UserServices {
     async createUser(userData: UserDataDto, createdById: string) {
         try {
             validateObjectId(createdById, 'Created By ID');
-            const { fname, lname, email, role, department } = userData;
+            const { fname, lname, email, role, department, phoneNumber } = userData;
             const existingUser = await this.UsersModel.findOne({ email });
             if (existingUser) {
                 throw new ConflictException(ResponseMessages.GENERAL.EMAIL_ALREADY_EXISTS);
             }
             const createdUser = await this.UsersModel.create({
-                fname, lname, email, role, department, createdBy: createdById, updatedBy: createdById
+                fname, lname, email, role, department, createdBy: createdById, updatedBy: createdById, phoneNumber
             });
             await this.leavePolicyServices.createUserBalance(createdUser._id as string)
             return { message: ResponseMessages.USER.CREATED, userId: createdUser._id }
@@ -148,11 +149,16 @@ export class UserServices {
         }
     }
 
-    async loginUser(email: string) {
-        console.log('im in the login function')
+    async loginUser(loginDto: LoginDto) {
+        const { email, image } = loginDto;
+
         try {
             const existingUser = await this.UsersModel.findOne({ email });
             if (existingUser || existingUser.isDeleted === false) {
+                if (!existingUser.img && image) {
+                    existingUser.img = image;
+                    await existingUser.save();
+                }
                 const payload = {
                     userId: existingUser._id,
                     email: existingUser.email,

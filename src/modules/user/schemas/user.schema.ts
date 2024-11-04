@@ -45,6 +45,9 @@ export class Users extends Document {
     @Prop({ type: MongooseSchema.Types.ObjectId, required: true })
     updatedBy: string;
 
+    @Prop({ type: String, required: true, length: 10 })
+    phoneNumber: string
+
 }
 
 export const UserSchema = SchemaFactory.createForClass(Users);
