@@ -156,8 +156,11 @@ export class UserServices {
             const existingUser = await this.UsersModel.findOne({ email });
             if (existingUser || existingUser.isDeleted === false) {
                 if (!existingUser.img && image) {
-                    existingUser.img = image;
-                    await existingUser.save();
+                    await this.UsersModel.findOneAndUpdate(
+                        { email },
+                        { img: image },
+                        { new: true }
+                    );
                 }
                 const payload = {
                     userId: existingUser._id,
@@ -167,7 +170,7 @@ export class UserServices {
                     role: existingUser.role,
                     department: existingUser.department,
                     isActive: existingUser.isActive,
-                    img: existingUser.img
+                    img: existingUser.img || image
                 };
                 const accessToken = this.jwtService.sign(payload);
                 return { accessToken }
