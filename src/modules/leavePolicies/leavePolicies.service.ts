@@ -8,6 +8,7 @@ import { LeavePolicyDto, LeavePolicyUpdateDto } from "./dtos/leavePolicies.dto";
 import { LeavePolicies } from "./schemas/leavePolicies.schema";
 import { LeaveBalance } from "./schemas/leaveBalance.schema";
 import { Cron } from "@nestjs/schedule";
+import { validateObjectId } from "src/validators/id-validator.validator";
 
 
 @Injectable()
@@ -48,6 +49,7 @@ export class LeavePolicyServices {
 
     async updateType(leaveTypeID: string, leaveTypeData: UpdateLeaveTypeDto) {
         try {
+            validateObjectId(leaveTypeID, 'Leave Type ID');
             if (leaveTypeData?.name) {
                 const existingType = await this.leaveTypeModel.findOne({
                     name: leaveTypeData.name,
@@ -122,6 +124,7 @@ export class LeavePolicyServices {
 
     async updateLeavePolicy(leavePolicyID: string, LeavePolicyData: LeavePolicyUpdateDto) {
         try {
+            validateObjectId(leavePolicyID, 'Leave Policy ID');
             const updatedPolicyData = {
                 ...LeavePolicyData,
                 updatedAt: new Date()
