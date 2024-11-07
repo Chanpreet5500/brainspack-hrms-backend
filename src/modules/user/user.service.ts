@@ -27,13 +27,28 @@ export class UserServices {
             const { fname, lname, email, role, department, phoneNumber } = userData;
             const existingUser = await this.UsersModel.findOne({ email });
             if (existingUser) {
-                throw new ConflictException(ResponseMessages.GENERAL.EMAIL_ALREADY_EXISTS);
+                if (existingUser.isDeleted === false) {
+                    throw new ConflictException(ResponseMessages.GENERAL.EMAIL_ALREADY_EXISTS);
+                } else {
+                    const updatedData = {
+                        ...userData,
+                        isActive: true,
+                        isDeleted: false,
+                        updatedBy: createdById
+                    }
+                    await this.UsersModel.findByIdAndUpdate(existingUser._id, updatedData, {
+                        new: true,
+                    });
+                    return { message: ResponseMessages.USER.UPDATED, userId: existingUser._id }
+                }
+            } else {
+                const createdUser = await this.UsersModel.create({
+                    fname, lname, email, role, department, createdBy: createdById, updatedBy: createdById, phoneNumber
+                });
+                await this.leavePolicyServices.createUserBalance(createdUser._id as string)
+                return { message: ResponseMessages.USER.CREATED, userId: createdUser._id }
             }
-            const createdUser = await this.UsersModel.create({
-                fname, lname, email, role, department, createdBy: createdById, updatedBy: createdById, phoneNumber
-            });
-            await this.leavePolicyServices.createUserBalance(createdUser._id as string)
-            return { message: ResponseMessages.USER.CREATED, userId: createdUser._id }
+
         } catch (error) {
             if (error instanceof HttpException) {
                 throw error;

@@ -12,6 +12,7 @@ import { HolidayModule } from './modules/holiday/holiday.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './auth/startegy/jwt.strategy';
+import { ProjectModule } from './modules/project/project.module';
 
 
 @Module({
@@ -37,7 +38,8 @@ import { JwtStrategy } from './auth/startegy/jwt.strategy';
     UserModule,
     LeaveModule,
     LeavePolicyModule,
-    HolidayModule
+    HolidayModule,
+    ProjectModule
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],

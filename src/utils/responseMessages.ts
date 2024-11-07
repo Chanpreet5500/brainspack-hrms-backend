@@ -58,6 +58,17 @@ export const ResponseMessages = {
         FAILED_UPDATE: "faild to update the holiday",
         FAILED_DELETE: "faild to delete the holiday",
         NOT_FOUND: "Holiday with this id not found"
+    },
+    PROJECT: {
+        CREATED: "Project is successfully created",
+        UPDATED: "Project is successfully updated",
+        DELETED: "Project is successfully deleted",
+        FAILED_FETCH: "faild to fetch the projects",
+        FAILED_CREATE: "faild to create the project",
+        FAILED_UPDATE: "faild to update the project",
+        FAILED_DELETE: "faild to delete the project",
+        NOT_FOUND: "Project with this id not found",
+        ASSIGNED_TO: "User the you have assigned the project not found"
     }
 
 };
