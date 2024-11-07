@@ -48,7 +48,6 @@ export class UserServices {
                 await this.leavePolicyServices.createUserBalance(createdUser._id as string)
                 return { message: ResponseMessages.USER.CREATED, userId: createdUser._id }
             }
-
         } catch (error) {
             if (error instanceof HttpException) {
                 throw error;
