@@ -6,6 +6,7 @@ import { Users, UserSchema } from "./schemas/user.schema";
 import { LeavePolicyModule } from "../leavePolicies/leavePolicies.module";
 import { LeaveModule } from "../leave/leave.module";
 import { JwtModule } from "@nestjs/jwt";
+import { WelcomeUserMailService } from "./services/mail/userWelcome.service";
 
 
 @Module({
@@ -21,7 +22,7 @@ import { JwtModule } from "@nestjs/jwt";
             signOptions: { expiresIn: '30d' },
         })),
     ],
-    providers: [UserServices],
+    providers: [UserServices, WelcomeUserMailService],
     controllers: [UserController],
     exports: [MongooseModule, UserServices]
 })

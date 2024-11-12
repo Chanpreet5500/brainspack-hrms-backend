@@ -10,15 +10,17 @@ import { LeavePolicyServices } from "../leavePolicies/leavePolicies.service";
 import { Leaves } from "../leave/schema/leave.schema";
 import { JwtService } from "@nestjs/jwt";
 import { LoginDto } from "./dtos/login.dto";
+import { WelcomeUserMailService } from "./services/mail/userWelcome.service";
 // import { LeaveServices } from "../leave/leave.service";
 
 @Injectable()
 export class UserServices {
     constructor(
         @InjectModel(Users.name) private UsersModel: Model<Users>,
-        @InjectModel(Users.name) private LeaveModel: Model<Leaves>,
+        @InjectModel(Leaves.name) private LeaveModel: Model<Leaves>,
         private readonly leavePolicyServices: LeavePolicyServices,
-        private readonly jwtService: JwtService
+        private readonly jwtService: JwtService,
+        private userMailService: WelcomeUserMailService,
     ) { }
 
     async createUser(userData: UserDataDto, createdById: string) {
@@ -45,6 +47,7 @@ export class UserServices {
                 const createdUser = await this.UsersModel.create({
                     fname, lname, email, role, department, createdBy: createdById, updatedBy: createdById, phoneNumber
                 });
+                await this.userMailService.sendSucessSignEmail(email)
                 await this.leavePolicyServices.createUserBalance(createdUser._id as string)
                 return { message: ResponseMessages.USER.CREATED, userId: createdUser._id }
             }
@@ -197,5 +200,31 @@ export class UserServices {
             }
             throw new InternalServerErrorException("Failed to Login")
         }
+    }
+
+    async getUserDetailById(userIds: string[]) {
+        try {
+            const users = await this.UsersModel.find(
+                { _id: { $in: userIds } },
+                { fname: 1, lname: 1, email: 1 }
+            ).exec();
+
+            return users.map(user => ({
+                fname: user.fname,
+                lname: user.lname,
+                email: user.email,
+            }));
+        } catch (error) {
+            console.error('Error fetching user details:', error);
+            // throw new Error('Could not fetch user details');
+        }
+    }
+
+    async higherUserEmail() {
+        const roles = ['admin', 'superadmin', 'hr'];
+
+        const users = await this.UsersModel.find({ role: { $in: roles }, isActive: true }, { email: 1, _id: 0 }).exec();
+
+        return users.map(user => user.email);
     }
 }

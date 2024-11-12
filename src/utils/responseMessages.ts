@@ -69,6 +69,16 @@ export const ResponseMessages = {
         FAILED_DELETE: "faild to delete the project",
         NOT_FOUND: "Project with this id not found",
         ASSIGNED_TO: "User the you have assigned the project not found"
+    },
+    RESIGNATION: {
+        CREATED: "Resign is submit successfully",
+        UPDATED: "Resign is successfully updated",
+        DELETED: "Resign is successfully deleted",
+        FAILED_CREATE: "faild to submit the Resign",
+        FAILED_FETCH: "faild to fetch the Resigns",
+        FAILED_UPDATE: "faild to update the Resign",
+        FAILED_DELETE: "faild to delete the Resign",
+        NOT_FOUND: "Resign with this id not found",
     }
 
 };

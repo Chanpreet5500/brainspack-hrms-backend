@@ -13,6 +13,7 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './auth/startegy/jwt.strategy';
 import { ProjectModule } from './modules/project/project.module';
+import { ResignationModule } from './modules/resignation/resignation.module';
 
 
 @Module({
@@ -39,7 +40,8 @@ import { ProjectModule } from './modules/project/project.module';
     LeaveModule,
     LeavePolicyModule,
     HolidayModule,
-    ProjectModule
+    ProjectModule,
+    ResignationModule
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],
