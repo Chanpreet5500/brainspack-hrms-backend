@@ -6,25 +6,22 @@ import { validateObjectId } from "src/validators/id-validator.validator";
 import { ResponseMessages } from "src/utils/responseMessages";
 
 
+@UseGuards(AuthGuard('jwt'))
 @Controller('api/resignation')
 export class ResignationController {
     constructor(private readonly resignationServices: ResignationServices) { }
 
-    @UseGuards(AuthGuard('jwt'))
     @Post('/:createdby')
     async create(@Param('createdby') createdById: string, @Body() resignationData: ResignationDataDto) {
-        validateObjectId(createdById, 'Updated By ID')
+        validateObjectId(createdById, 'Updated   By ID')
         return this.resignationServices.createResignation(createdById, resignationData);
     }
 
-
-    @UseGuards(AuthGuard('jwt'))
-    @Get()
-    async getAllUploads() {
-        return await this.resignationServices.getAllUploads();
+    @Get('/:page?/:limit?/:search?')
+    async getAllUploads(@Query('page') page: number, @Query('limit') limit: number, @Query('search') search: string) {
+        return await this.resignationServices.getAllUploads(page, limit, search);
     }
 
-    @UseGuards(AuthGuard('jwt'))
     @Patch('update/:updatedby/:resignId/:status?')
     async update(@Param('updatedby') updatedById: string,
         @Param('resignId') resignId: string,
@@ -37,8 +34,6 @@ export class ResignationController {
         return this.resignationServices.updateresign(updatedById, resignId, status)
     }
 
-
-    @UseGuards(AuthGuard('jwt'))
     @Delete('delete/:id')
     async delete(@Param('id') id: string) {
         validateObjectId(id, 'Resignation ID');

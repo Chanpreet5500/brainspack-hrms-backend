@@ -14,6 +14,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './auth/startegy/jwt.strategy';
 import { ProjectModule } from './modules/project/project.module';
 import { ResignationModule } from './modules/resignation/resignation.module';
+import { AssetsModule } from './modules/CompanyAssets/assets.module';
+import { OffboardingModule } from './modules/offboarding/offboarding.module';
 
 
 @Module({
@@ -22,7 +24,8 @@ import { ResignationModule } from './modules/resignation/resignation.module';
       isGlobal: true,
       cache: true,
       load: [config],
-      expandVariables: true
+      expandVariables: true,
+      envFilePath: '.env'
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
@@ -41,7 +44,9 @@ import { ResignationModule } from './modules/resignation/resignation.module';
     LeavePolicyModule,
     HolidayModule,
     ProjectModule,
-    ResignationModule
+    ResignationModule,
+    AssetsModule,
+    OffboardingModule
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],

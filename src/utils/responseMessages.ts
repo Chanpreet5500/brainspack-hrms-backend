@@ -79,6 +79,28 @@ export const ResponseMessages = {
         FAILED_UPDATE: "faild to update the Resign",
         FAILED_DELETE: "faild to delete the Resign",
         NOT_FOUND: "Resign with this id not found",
+    },
+    ASSET: {
+        CREATED: "Asset is submit successfully",
+        UPDATED: "Asset data is successfully updated",
+        DELETED: "Asset is successfully deleted",
+        FAILED_CREATE: "faild to submit the Asset",
+        FAILED_FETCH: "faild to fetch the Assets",
+        FAILED_UPDATE: "faild to update the Asset",
+        FAILED_DELETE: "faild to delete the Asset",
+        NOT_FOUND: "Asset with this id not found",
+        ASSET_ALREADY_EXISTS: "Asset with this serial number already exists"
+    },
+    RETURN_ASSET: {
+        CREATED: "Return Asset request is submit successfully",
+        UPDATED: "Return Asset data is successfully updated",
+        DELETED: "Return Asset is successfully deleted",
+        FAILED_CREATE: "faild to submit the return Asset request",
+        FAILED_FETCH: "faild to fetch the Return Assets",
+        FAILED_UPDATE: "faild to update the Return Asset request",
+        FAILED_DELETE: "faild to delete the return asset Request",
+        NOT_FOUND: "Return Asset request with this id not found",
+        ALREADY_EXISTS: "Return Asset request already exists"
     }
 
 };

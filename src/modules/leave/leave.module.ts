@@ -5,6 +5,7 @@ import { LeaveServices } from "./leave.service";
 import { LeaveController } from "./leave.controller";
 import { LeavePolicyModule } from "../leavePolicies/leavePolicies.module";
 import { UserModule } from "../user/user.module";
+import { UserLeaveMailService } from "./services/mail/leave.service";
 
 @Module({
     imports: [
@@ -15,7 +16,7 @@ import { UserModule } from "../user/user.module";
         forwardRef(() => UserModule),
         LeavePolicyModule
     ],
-    providers: [LeaveServices],
+    providers: [LeaveServices, UserLeaveMailService],
     controllers: [LeaveController],
     exports: [LeaveServices, MongooseModule]
 })

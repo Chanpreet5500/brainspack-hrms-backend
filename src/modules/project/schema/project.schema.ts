@@ -13,6 +13,9 @@ export class Projects extends Document {
     @Prop({ type: String, required: true })
     description: string
 
+    @Prop({ default: true })
+    isActive: boolean;
+
     @Prop({ type: Date, required: true })
     start_date: Date
 

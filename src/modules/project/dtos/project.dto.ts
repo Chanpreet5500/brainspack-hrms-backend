@@ -1,5 +1,5 @@
 import { Transform } from "class-transformer";
-import { IsArray, IsDate, IsMongoId, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsArray, IsBoolean, IsDate, IsMongoId, IsNotEmpty, IsOptional, IsString } from "class-validator";
 import { parseDateString } from "src/helpers/date.helper";
 import { IsBeforeDate } from "src/validators/is-before-date.validator";
 
@@ -54,6 +54,10 @@ export class ProjectUpdateDataDto {
     @Transform(({ value }) => parseDateString(value), { toClassOnly: true })
     @IsDate()
     start_date: Date;
+
+    @IsOptional()
+    @IsBoolean()
+    isActive: boolean
 
     @IsOptional()
     @IsNotEmpty()

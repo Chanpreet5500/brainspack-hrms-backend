@@ -4,7 +4,7 @@ import { Projects, ProjectSchema } from "./schema/project.schema";
 import { ProjectServices } from "./project.services";
 import { ProjectController } from "./project.controller";
 import { UserModule } from "../user/user.module";
-import { projectMailService } from "./services/mail/assignedProject.service";
+import { ProjectMailService } from "./services/mail/assignedProject.service";
 
 @Module({
     imports: [
@@ -14,7 +14,7 @@ import { projectMailService } from "./services/mail/assignedProject.service";
         }]),
         UserModule
     ],
-    providers: [ProjectServices, projectMailService],
+    providers: [ProjectServices, ProjectMailService],
     controllers: [ProjectController],
 })
 export class ProjectModule { }

@@ -47,7 +47,8 @@ export class UserServices {
                 const createdUser = await this.UsersModel.create({
                     fname, lname, email, role, department, createdBy: createdById, updatedBy: createdById, phoneNumber
                 });
-                await this.userMailService.sendSucessSignEmail(email)
+                const mailAddress = await this.adminWithSuperAdminEmail();
+                await this.userMailService.sendSucessSignEmail(email, mailAddress)
                 await this.leavePolicyServices.createUserBalance(createdUser._id as string)
                 return { message: ResponseMessages.USER.CREATED, userId: createdUser._id }
             }
@@ -221,10 +222,13 @@ export class UserServices {
     }
 
     async higherUserEmail() {
-        const roles = ['admin', 'superadmin', 'hr'];
-
+        const roles = ['admin', 'hr'];
         const users = await this.UsersModel.find({ role: { $in: roles }, isActive: true }, { email: 1, _id: 0 }).exec();
-
+        return users.map(user => user.email);
+    }
+    async adminWithSuperAdminEmail() {
+        const roles = ['admin', 'superadmin', 'hr'];
+        const users = await this.UsersModel.find({ role: { $in: roles }, isActive: true }, { email: 1, _id: 0 }).exec();
         return users.map(user => user.email);
     }
 }

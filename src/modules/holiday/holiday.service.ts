@@ -41,7 +41,6 @@ export class HolidayServices {
     async updateHoliday(updatedById: string, holidayUpdateddata: HolidayUpdateDataDto) {
 
         try {
-            // validateObjectId(id, 'Holiday ID');
             validateObjectId(updatedById, 'Updated By ID');
             const updatedData = {
                 ...holidayUpdateddata,

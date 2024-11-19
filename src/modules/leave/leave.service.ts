@@ -9,6 +9,7 @@ import { STATUSTYPE } from "src/utils/constant";
 import { LeavePolicyServices } from "../leavePolicies/leavePolicies.service";
 import { calculateTotalDay } from "src/helpers/calculateLeaveDay.helper";
 import { UserServices } from "../user/user.service";
+import { UserLeaveMailService } from "./services/mail/leave.service";
 
 type statusType = typeof STATUSTYPE[number];
 @Injectable()
@@ -16,7 +17,8 @@ export class LeaveServices {
     constructor(
         @InjectModel(Leaves.name) private LeaveModel: Model<Leaves>,
         private readonly leavePolicyServices: LeavePolicyServices,
-        private readonly userService: UserServices
+        private readonly userService: UserServices,
+        private readonly leaveMailServices: UserLeaveMailService
     ) { }
 
     async createleave(createdById: string, leaveData: LeaveDataDto) {
@@ -48,6 +50,11 @@ export class LeaveServices {
                 end_half_day_time: end_day === 'half' ? end_half_day_time : undefined,
             }
             await this.LeaveModel.create(leaveDataToCreate);
+            const appliedUser = await this.userService.getUserDetailById([employee_id])
+            const adminMailAddress = await this.userService.higherUserEmail();
+            await this.leaveMailServices.sendLeaveToAdmin(adminMailAddress, appliedUser[0].email)
+            await this.leaveMailServices.sendLeaveApplied(appliedUser[0].email)
+
             return { message: ResponseMessages.LEAVE.CREATED, days: totalDays }
         } catch (error) {
             if (error instanceof HttpException) {
@@ -127,10 +134,13 @@ export class LeaveServices {
             throw new NotFoundException(ResponseMessages.GENERAL.NOT_FOUND);
         }
         const { leave_type_id, employee_id, totaldays, status } = existingLeave;
+        const appliedUser = await this.userService.getUserDetailById([employee_id.toString()])
         if (newstatus === 'approved') {
             await this.leavePolicyServices.addLeaveInBalance(leave_type_id, employee_id, totaldays);
+            await this.leaveMailServices.sendLeaveApproved(appliedUser[0].email)
         } else if (status === 'approved' && newstatus === 'rejected') {
             await this.leavePolicyServices.removeLeaveInBalance(leave_type_id, employee_id, totaldays);
+            await this.leaveMailServices.sendLeaveDeclined(appliedUser[0].email)
         }
     }
 

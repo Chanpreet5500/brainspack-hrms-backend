@@ -1,42 +1,31 @@
-import * as nodemailer from 'nodemailer';
 import { Injectable } from '@nestjs/common';
+import { MailService } from 'src/services/mail/mail.service';
 
 @Injectable()
-export class projectMailService {
-    private transporter: nodemailer.Transporter;
+export class ProjectMailService extends MailService {
 
-    constructor() {
-        this.transporter = nodemailer.createTransport({
-            host: 'smtp.gmail.com',
-            port: 465,
-            secure: true,
-            auth: {
-                user: process.env.ADMIN_EMAIL,
-                pass: process.env.ADMIN_PASSWORD,
-            },
-        });
+    async sendAssignedToEmail(bcc: string[], by: string, projectName: string): Promise<void> {
+        const subject = `You are assigned to project: ${projectName}`;
+        const html = `<p>Congratulations, you have been chosen for the project <strong>${projectName}</strong> by <strong>${by}</strong>.</p>`;
+        await this.sendAdminNotification(bcc, subject, html);
     }
 
-    async sendAssignedToEmail(to: string, by: string, projectName: string) {
-        console.log(process.env.ADMIN_EMAIL, process.env.ADMIN_PASSWORD)
-        const mailOptions = {
-            from: 'Auth-backend service',
-            to: to,
-            subject: `You are assigned for project ${projectName}`,
-            html: `<p>Congratulations, you got choosen for ${projectName} project by ${by}</p>`,
-        };
-        await this.transporter.sendMail(mailOptions);
+    async sendAssignedByEmail(to: string, projectName: string, assignedUsers: string[]): Promise<void> {
+        const subject = `${projectName} is assigned`;
+        const html = `<p>The project <strong>${projectName}</strong> has been assigned to <strong>${assignedUsers.toString()}</strong>.</p>`;
+        await this.sendMail(to, subject, html)
     }
 
-    async sendAssignedByEmail(to: string, assignedUsers: string, projectName: string) {
-
-        const mailOptions = {
-            from: 'Auth-backend service',
-            to: to,
-            subject: `${projectName} is assigned`,
-            html: `<p>${projectName} has been assigned to ${assignedUsers}</p>`,
-        };
-
-        await this.transporter.sendMail(mailOptions);
+    async sendUpdateEmail(bcc: string[], by: string, projectName: string): Promise<void> {
+        const subject = `Project: ${projectName} details Updated`;
+        const html = `<p><strong>${projectName}</strong> details are updated by <strong>${by}</strong>.</p>`;
+        await this.sendAdminNotification(bcc, subject, html);
     }
+
+    async sendUpdatetoAssignedBy(to: string, by: string, projectName: string): Promise<void> {
+        const subject = `${projectName} is Updated`;
+        const html = `<p>The project <strong>${projectName}</strong> has been updated by <strong>${by}</strong>.</p>`;
+        await this.sendMail(to, subject, html)
+    }
+
 }

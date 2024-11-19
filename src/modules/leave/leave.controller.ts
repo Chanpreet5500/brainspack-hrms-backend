@@ -5,29 +5,26 @@ import { ResponseMessages } from "src/utils/responseMessages";
 import { AuthGuard } from "@nestjs/passport";
 
 
+@UseGuards(AuthGuard('jwt'))
 @Controller('api/leaves')
 export class LeaveController {
     constructor(private readonly leaveServices: LeaveServices) { }
 
-    @UseGuards(AuthGuard('jwt'))
     @Get('/:page?/:limit?/:search?')
     async getLeaves(@Query('page') page: number, @Query('limit') limit: number, @Query('search') search: string) {
         return this.leaveServices.getAllleaves(page, limit, search)
     }
 
-    @UseGuards(AuthGuard('jwt'))
     @Get('/:employeeid')
     async getEmployeeLeaves(@Param('employeeid') employeeId: string) {
         return this.leaveServices.getEmployeeLeaves(employeeId)
     }
 
-    @UseGuards(AuthGuard('jwt'))
     @Post('/:createdby')
     async create(@Param('createdby') createdById: string, @Body() leavedata: LeaveDataDto) {
         return this.leaveServices.createleave(createdById, leavedata)
     }
 
-    @UseGuards(AuthGuard('jwt'))
     @Patch('update/:updatedby/:leaveid/:status?')
     async update(@Param('updatedby') updatedById: string,
         @Param('leaveid') leaveId: string,
