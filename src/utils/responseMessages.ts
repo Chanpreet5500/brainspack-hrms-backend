@@ -1,0 +1,108 @@
+
+export const ResponseMessages = {
+    USER: {
+        CREATED: "User created successfully",
+        UPDATED: "User updated successfully",
+        DELETED: "User deleted successfully",
+        FAILED_CREATE: 'Failed to create user',
+        FAILED_UPDATE: 'Failed to update the user',
+        FAILED_DELETE: 'Failed to delete the user',
+        FAILED_FETCH: 'Failed to fetch the users',
+    },
+    GENERAL: {
+        NOT_FOUND: "User with this ID not found",
+        INVALID_ID: 'Invalid ID',
+        EMAIL_ALREADY_EXISTS: "Email Already registered",
+        EMAIL_NOT_FOUND: "User with this email not found"
+    },
+    VALIDATION: {
+        FIRST_NAME_INVALID: 'First name should only contain alphabets and spaces',
+        LAST_NAME_INVALID: 'Last name should only contain alphabets and spaces',
+        PHONE_NUMBER: 'Phone number must contain exactly 10 digits'
+    },
+    LEAVE: {
+        CREATED: "Leave request added successfully",
+        UPDATED: "Leave status updated successfully",
+        FAILED_CREATE: "Failed to create the Leave",
+        FAILED_FETCH: "Failed to fetch leaves",
+        FAILED_UPDATE: "Failed to update the leave status",
+        INVALID_STATUS: `Invalid status. Status must be either "approved" or "rejected"`
+    },
+    LEAVETYPE: {
+        CREATED: "Leave type created successfully",
+        UPDATED: "Leave type successfully updated",
+        FAILED_CREATE: "Failed to create the Leave type",
+        FAILED_FETCH: 'Failed to fetch the Leave types',
+        TYPE_ALREADY_EXISTS: "Leave type already exists",
+        TYPE_NOT_EXISTS: "Leave type not exist",
+        FAILED_UPDATE: "Failed to update the Leave type",
+    },
+    LEAVEPOLICY: {
+        CREATED: 'Leave policy created successfully',
+        UPDATED: "Leave policy updated successfully",
+        FAILED_CREATE: "Failed to create the Leave policy",
+        FAILED_UPDATE: "Failed to update the leave policy",
+        POLICIY_ALREADY_EXISTS: "Leave policy already exists",
+        NOT_FOUND: "Leave policy not found",
+        FAILED_FETCH: 'Failed to fetch the Leave policies',
+    },
+    LEAVEBALANCE: {
+        FAILED_FETCH: "Failed to fetch the leave Balance"
+    },
+    HOLIDAY: {
+        CREATED: "Holiday is successfully added",
+        UPDATED: "Holiday is successfully updated",
+        DELETED: "Holiday is successfully deleted",
+        FAILED_FETCH: "faild to fetch the holidays",
+        FAILED_CREATE: "faild to create the holiday",
+        FAILED_UPDATE: "faild to update the holiday",
+        FAILED_DELETE: "faild to delete the holiday",
+        NOT_FOUND: "Holiday with this id not found"
+    },
+    PROJECT: {
+        CREATED: "Project is successfully created",
+        UPDATED: "Project is successfully updated",
+        DELETED: "Project is successfully deleted",
+        FAILED_FETCH: "faild to fetch the projects",
+        FAILED_CREATE: "faild to create the project",
+        FAILED_UPDATE: "faild to update the project",
+        FAILED_DELETE: "faild to delete the project",
+        NOT_FOUND: "Project with this id not found",
+        ASSIGNED_TO: "User the you have assigned the project not found"
+    },
+    RESIGNATION: {
+        CREATED: "Resign is submit successfully",
+        UPDATED: "Resign is successfully updated",
+        DELETED: "Resign is successfully deleted",
+        FAILED_CREATE: "faild to submit the Resign",
+        FAILED_FETCH: "faild to fetch the Resigns",
+        FAILED_UPDATE: "faild to update the Resign",
+        FAILED_DELETE: "faild to delete the Resign",
+        NOT_FOUND: "Resign with this id not found",
+    },
+    ASSET: {
+        CREATED: "Asset is submit successfully",
+        UPDATED: "Asset data is successfully updated",
+        DELETED: "Asset is successfully deleted",
+        FAILED_CREATE: "faild to submit the Asset",
+        FAILED_FETCH: "faild to fetch the Assets",
+        FAILED_UPDATE: "faild to update the Asset",
+        FAILED_DELETE: "faild to delete the Asset",
+        NOT_FOUND: "Asset with this id not found",
+        ASSET_ALREADY_EXISTS: "Asset with this serial number already exists"
+    },
+    RETURN_ASSET: {
+        CREATED: "Return Asset request is submit successfully",
+        UPDATED: "Return Asset data is successfully updated",
+        DELETED: "Return Asset is successfully deleted",
+        FAILED_CREATE: "faild to submit the return Asset request",
+        FAILED_FETCH: "faild to fetch the Return Assets",
+        FAILED_UPDATE: "faild to update the Return Asset request",
+        FAILED_DELETE: "faild to delete the return asset Request",
+        NOT_FOUND: "Return Asset request with this id not found",
+        ALREADY_EXISTS: "Return Asset request already exists"
+    }
+
+};
+
+

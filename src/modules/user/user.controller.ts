@@ -1,29 +1,42 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
+import { Body, Controller, Get, Param, Patch, Post, Put, Query, UseGuards } from "@nestjs/common";
 import { UserServices } from "./user.service";
-import { UserDataDto } from "./dtos/userdata.dto";
+import { UserDataDto, UserUpdateDataDto } from "./dtos/userdata.dto";
+import { LoginDto } from "./dtos/login.dto";
+import { AuthGuard } from "@nestjs/passport";
 
 
-@Controller('users')
+@Controller('api/users')
 export class UserController {
     constructor(private readonly userServices: UserServices) { }
 
-    @Get('/all/:page/:limit')
-    async getUsers(@Param('page') page: number, @Param('limit') limit: number) {
-        return this.userServices.getusers(page, limit)
+    @UseGuards(AuthGuard('jwt'))
+    @Get('/:page?/:limit?/:search?')
+    async getUsers(@Query('page') page: number, @Query('limit') limit: number, @Query('search') search: string) {
+        return this.userServices.getUsers(page, limit, search)
     }
 
-    @Post('/create')
-    async create(@Body() userdata: UserDataDto) {
-        return this.userServices.createuser(userdata)
+    @UseGuards(AuthGuard('jwt'))
+    @Post('/create/:createdby')
+    async create(@Param('createdby') createdById: string, @Body() userdata: UserDataDto) {
+        return this.userServices.createUser(userdata, createdById)
     }
 
-    @Put('/update/:id')
-    async update(@Param('id') id: string, @Body() userdata: UserDataDto) {
-        return this.userServices.updateuser(id, userdata)
+    @UseGuards(AuthGuard('jwt'))
+    @Put('/update/:updatedby/:id')
+    async update(@Param('id') id: string,
+        @Param('updatedby') updatedById: string,
+        @Body() userUpdateddata: UserUpdateDataDto) {
+        return this.userServices.updateUser(id, updatedById, userUpdateddata)
     }
 
-    @Delete('/delete/:id')
-    async delete(@Param('id') id: string) {
-        return this.userServices.deleteuser(id)
+    @UseGuards(AuthGuard('jwt'))
+    @Patch('/delete/:deletedby/:id')
+    async delete(@Param('id') id: string, @Param('deletedby') deletedById: string) {
+        return this.userServices.deleteUser(id, deletedById)
+    }
+
+    @Post('/login')
+    async login(@Body() loginDto: LoginDto) {
+        return this.userServices.loginUser(loginDto)
     }
 }
